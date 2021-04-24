@@ -1,0 +1,117 @@
+body {
+    font-family: "Oswald", sans-serif;
+}
+
+.scrollingContainer {
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+}
+
+.section {
+    height: 100vh;
+    width: 100%;
+    color: #53525e;
+    font-size: 5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #d3f6f3;
+}
+
+.section:nth-child(2) {
+    background-color: #f9fce1;
+}
+
+.section:nth-child(3) {
+    background-color: #fee9b2;
+}
+
+.section:nth-child(4) {
+    background-color: #fbd1b7;
+}
+
+.floating {
+    position: relative;
+}
+
+.contextMenu {
+    width: 2.5em;
+    height: 2.5em;
+    border-radius: 50%;
+    background-color: #3c3c3b;
+    position: fixed;
+    cursor: pointer;
+    bottom: 0;
+    margin: 1em;
+    z-index: 1;
+}
+
+.menu {
+    position: fixed;
+    bottom: 0;
+    margin: 2.5em 4em 4em;
+    z-index: 1;
+    display: flex;
+    flex-flow: column;
+}
+
+.menu > a {
+    background-color: #3c3c3b;
+    color: white;
+    width: 150px;
+    padding: 0.5em;
+    text-align: center;
+    transform: translateY(-3.5em);
+    transition: transform 400ms 0ms, opacity 400ms ease-out;
+    opacity: 1;
+    border-radius: 8pt;
+    text-decoration: none;
+}
+
+.menu > a:nth-child(2) {
+    transform: translateY(-2.5em);
+    transition: transform 300ms 0ms, opacity 300ms ease-out;
+}
+
+.menu > a:nth-child(3) {
+    transform: translateY(-1.5em);
+    transition: transform 300ms 0ms, opacity 300ms ease-out;
+}
+
+
+.menu > a:last-child {
+    transform: translateY(-0.5em);
+    transition: transform 200ms 0ms, opacity 200ms ease-out;
+}
+
+.hideMenu {
+    position: fixed;
+    bottom: 0;
+    margin: 2.5em 4em;
+    display: flex;
+    flex-flow: column;
+}
+
+.hideMenu > a {
+    background-color: #53525e;
+    color: white;
+    width: 150px;
+    padding: 0.5em;
+    text-align: center;
+    visibility: hidden;
+    transform: translateY(4em);
+    transition: transform 400ms 0ms, opacity 400ms ease-in;
+    opacity: 0;
+    border-radius: 8pt;
+    text-decoration: none;
+}
+
+.hideMenu > a:nth-child(2) {
+    transform: translateY(2em);
+    transition: transform 300ms 0ms, opacity 300ms ease-in;
+}
+
+.hideMenu > a:last-child {
+    transform: translateY(0em);
+    transition: opacity 200ms ease-in;
+}

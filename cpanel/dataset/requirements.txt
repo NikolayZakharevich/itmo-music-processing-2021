@@ -1,0 +1,10 @@
+pandas~=1.1.5
+yandex-music~=1.0.0
+python-dotenv~=0.17.0
+toloka-kit~=0.1.5
+matplotlib~=3.3.4
+deezer-python~=2.2.2
+requests~=2.25.1
+lxml~=4.6.3
+python-dateutil~=2.8.1
+seaborn~=0.9.0

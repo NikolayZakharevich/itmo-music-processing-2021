@@ -1,0 +1,69 @@
+-------------------------------------------------------------------------------
+backend/cpanel.ini:
+-------------------------------------------------------------------------------
+[uwsgi]
+module = wsgi:app
+
+master = true
+processes = 5
+
+socket = cpanel.sock
+chmod-socket = 664
+uid = www-data
+gid = www-data
+
+vacuum = true
+
+die-on-term = true
+
+logto = /var/log/uwsgi/%n.log
+touch-reload = wsgi.py
+
+-------------------------------------------------------------------------------
+/etc/systemd/system/cpanel.service:
+-------------------------------------------------------------------------------
+
+[Unit]
+Description=uWSGI instance to serve cpanel
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/home/www-data/cpanel/backend
+Environment="PATH=/home/www-data/cpanel/backend/venv-cpanel/bin"
+ExecStart=/home/www-data/cpanel/backend/venv-cpanel/bin/uwsgi --ini cpanel.ini
+
+[Install]
+WantedBy=multi-user.target
+
+-------------------------------------------------------------------------------
+/etc/nginx/sites-available/cpanel-backend:
+-------------------------------------------------------------------------------
+server {
+    listen 8080 default_server;
+    server_name _;
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:/home/www-data/cpanel/backend/cpanel.sock;
+    }
+
+}
+-------------------------------------------------------------------------------
+/etc/nginx/sites-available/cpanel-client:
+-------------------------------------------------------------------------------
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/cpanel;
+
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location / {
+        try_files $uri /index.html =404;
+    }
+}
