@@ -1,3 +1,6 @@
+import json
+import os
+
 import pandas as pd
 
 from flask import Flask
@@ -13,6 +16,14 @@ cors = CORS(app)
 def get_data():
     df = pd.read_csv(DATASET_DIR + 'tracks.csv')
     return df.to_json(orient='records'), 200
+
+
+@app.route("/api/audios_track_ids", methods=['GET'])
+def get_audios_track_ids():
+    return json.dumps(list(map(
+        lambda filename: int(filename.replace('.mp3', '')),
+        os.listdir(DIR_STORAGE_AUDIOS)
+    ))), 200
 
 
 def main():

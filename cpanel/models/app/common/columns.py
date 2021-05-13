@@ -44,6 +44,12 @@ class Emotion(Enum):
     FEAR = 'fear'
 
 
+@unique
+class DumpColumn(Enum):
+    TRACK_IDS = 'track_ids'
+    FEATURES = 'features'
+
+
 EMOTIONS = [e.value for e in Emotion]
 
 
@@ -76,18 +82,36 @@ class Genre(Enum):
     RNB = 'rnb'
 
 
-GENRES_OLD = [
-    'blues',
-    'classical',
-    'country',
-    'disco',
-    'hiphop',
-    'jazz',
-    'metal',
-    'pop',
-    'reggae',
-    'rock'
-]
+@unique
+class GenreNational(Enum):
+    AZERBAIJANI = 'azerbaijani'
+    AMERICAN = 'amerfolk'
+    ARGENTINIAN = 'argentinetango'
+    ARMENIAN = 'armenian'
+    AFRICAN = 'african'
+    BALKAN = 'balkan'
+    EASTERN = 'eastern'
+    GEORGIAN = 'georgian'
+    JEWISH = 'jewish'
+    EUROPEAN = 'eurofolk'
+    CAUCASIAN = 'caucasian'
+    CELTIC = 'celtic'
+    LATIN = 'latinfolk'
+    RUSSIAN = 'rusfolk'
+
+
+@unique
+class GenreGtzan(Enum):
+    BLUES = 'blues'
+    CLASSICAL = 'classical'
+    COUNTRY = 'country'
+    DISCO = 'disco'
+    HIPHOP = 'hiphop'
+    JAZZ = 'jazz'
+    METAL = 'metal'
+    POP = 'pop'
+    REGGAE = 'reggae'
+    ROCK = 'rock'
 
 
 def map_genre_raw(genre_raw) -> Genre:

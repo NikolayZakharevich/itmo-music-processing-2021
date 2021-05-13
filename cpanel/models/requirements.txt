@@ -9,3 +9,4 @@ seaborn
 scikit-learn
 pydot_ng
 graphviz
+python-dotenv~=0.17.0

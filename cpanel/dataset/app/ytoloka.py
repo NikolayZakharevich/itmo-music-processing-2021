@@ -22,10 +22,10 @@ from toloka.client.task_suite import TaskSuite
 from toloka.client.user_restriction import UserRestriction, DurationUnit
 
 from app.columns import Emotion, Column, AssignmentColumn
-from config import TOKEN_YANDEX_TOLOKA, YANDEX_TOLOKA_PROJECT_ID, YANDEX_TOLOKA_TRAINING_POOL_ID, STATIC_STORAGE_URL
+from config import TOKEN_YANDEX_TOLOKA, YANDEX_TOLOKA_PROJECT_ID, YANDEX_TOLOKA_TRAINING_POOL_ID, STORAGE_URL_STATIC
 
 REWARD_PER_ASSIGNMENT = 0.01
-TASKS_PER_TASK_SUITE = 10
+TASKS_PER_TASK_SUITE = 20
 TRAINING_PASSING_SKILL_VALUE = 90
 OVERLAP = 3
 
@@ -54,7 +54,10 @@ class YToloka:
         self.client.update_pool(YANDEX_TOLOKA_PROJECT_ID, emotion.value)
 
     def upload_tasks(self, emotion: Emotion, tracks: pd.DataFrame) -> TaskSuiteBatchCreateResult:
-        if len(tracks) == 0:
+        return self.upload_tasks_by_paths(emotion, tracks[Column.AUDIO_PATH.value])
+
+    def upload_tasks_by_paths(self, emotion: Emotion, audio_paths: pd.Series) -> TaskSuiteBatchCreateResult:
+        if len(audio_paths) == 0:
             return TaskSuiteBatchCreateResult()
 
         self._check_auth()
@@ -62,24 +65,31 @@ class YToloka:
         emotion_str = emotion.value
         pool_id = self._get_pool_id(emotion)
 
-        columns = [Column.YM_TRACK_ID.value, Column.YM_ALBUM_ID.value, Column.AUDIO_PATH.value]
-        tracks: pd.DataFrame = tracks[columns]
-
         tasks: List[BaseTask] = []
-        for index, row in tracks.iterrows():
+        for audio_path in audio_paths.tolist():
             tasks.append(BaseTask(input_values={
                 'emotion': emotion_str,
-                Column.AUDIO_PATH.value: STATIC_STORAGE_URL + row[Column.AUDIO_PATH.value],
+                Column.AUDIO_PATH.value: STORAGE_URL_STATIC + audio_path,
             }))
 
         task_suites: List[TaskSuite] = []
-        for tasks_batch in array_split(tasks, TASKS_PER_TASK_SUITE):
+        n_suites = (len(tasks) + TASKS_PER_TASK_SUITE - 1) // TASKS_PER_TASK_SUITE
+        for tasks_batch in array_split(tasks, n_suites):
             task_suites.append(TaskSuite(
                 overlap=OVERLAP,
                 pool_id=pool_id,
-                tasks=tasks_batch
+                tasks=tasks_batch.tolist()
             ))
+
         return self.client.create_task_suites(task_suites=task_suites)
+
+    def stop_task_suites(self, emotion: Emotion):
+        pool_id = self._get_pool_id(emotion)
+
+        task_suites = self.client.get_task_suites(pool_id=pool_id)
+        for task_suite in task_suites:
+            if task_suite.remaining_overlap > 0:
+                self.client.patch_task_suite_overlap_or_min(task_suite.id, overlap=0)
 
     def update_assignments(self, assignments: pd.DataFrame, emotion: Emotion) -> pd.DataFrame:
         updated_assignments = {}
@@ -98,6 +108,9 @@ class YToloka:
             updated_assignments[assignment_hash] = assignment
 
         return pd.DataFrame(data=updated_assignments.values(), columns=assignments.columns)
+
+    def open_pool(self, emotion: Emotion):
+        self.client.open_pool(self._get_pool_id(emotion))
 
     @staticmethod
     def update_emotions(tracks: pd.DataFrame, assignments: pd.DataFrame) -> pd.DataFrame:
@@ -152,11 +165,11 @@ class YToloka:
         column_no = AssignmentColumn.NO.value
 
         def extract_track_id(audio_url) -> Union[str, None]:
-            credentials_search_v1 = re.search(fr'{STATIC_STORAGE_URL}.+/(\d+):(\d+).mp3', audio_url)
+            credentials_search_v1 = re.search(fr'{STORAGE_URL_STATIC}.+/(\d+):(\d+).mp3', audio_url)
             if credentials_search_v1:
                 track_id = credentials_search_v1.group(2)
                 return track_id
-            credentials_search_v2 = re.search(fr'{STATIC_STORAGE_URL}.+/(\d+).mp3', audio_url)
+            credentials_search_v2 = re.search(fr'{STORAGE_URL_STATIC}.+/(\d+).mp3', audio_url)
             if credentials_search_v2:
                 track_id = credentials_search_v2.group(1)
                 return track_id

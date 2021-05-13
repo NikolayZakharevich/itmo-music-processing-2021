@@ -1,5 +1,6 @@
 import os
 import re
+from operator import itemgetter
 from pathlib import Path
 from pickle import dump, load
 from typing import List
@@ -10,8 +11,8 @@ from pydub import AudioSegment
 from sklearn.preprocessing import LabelBinarizer
 
 from app.common.columns import Column, EMOTIONS
+from app.common.utils import add_trailing_path_separator
 from app.features.features import extract_audio_features_v1
-from operator import itemgetter
 
 SECOND_MILLIS = 1000
 
@@ -30,7 +31,7 @@ def remove_album_from_name(audio_paths):
 
 
 def remove_all_audios_but(dir_audios: str, audio_paths_to_keep: pd.Series):
-    dir_audios = add_trailing_slash(dir_audios)
+    dir_audios = add_trailing_path_separator(dir_audios)
     paths_to_keep = set(audio_paths_to_keep.tolist())
 
     audio_paths_all = os.listdir(dir_audios)
@@ -57,15 +58,13 @@ def check_audio_files_exist(tracks: pd.DataFrame) -> List[str]:
 
 
 # Returns path to copied audio
-def copy_first_30_seconds(audio_path, dest_path=None) -> str:
-    N_SECONDS = 30
-
+def copy_first_n_seconds(audio_path, dest_path=None, n_seconds=30) -> str:
     name, ext = audio_path.split('/')[-1].split('.')
     sound = AudioSegment.from_file(audio_path, ext)
 
     # len() and slicing are in milliseconds
     length_ms = len(sound)
-    high = min(N_SECONDS * SECOND_MILLIS, length_ms)
+    high = min(n_seconds * SECOND_MILLIS, length_ms)
     part = sound[:high]
 
     if dest_path is None:
@@ -153,9 +152,10 @@ def save_extracted_features(
 
 
 def load_data_from_dumps(tracks: pd.DataFrame, dump_dir: str):
+    track_ids_requested = set(tracks[Column.YM_TRACK_ID.value].tolist())
     tracks_data = {}
 
-    dump_dir = add_trailing_slash(dump_dir)
+    dump_dir = add_trailing_path_separator(dump_dir)
     dump_files = list(map(lambda filename: dump_dir + filename, os.listdir(dump_dir)))
     dump_files_iter = iter(dump_files)
 
@@ -165,13 +165,11 @@ def load_data_from_dumps(tracks: pd.DataFrame, dump_dir: str):
             with open(dump_file, 'rb') as f:
                 track_ids, x, y = itemgetter('track_ids', 'x', 'y')(load(f))
                 for i in range(len(track_ids)):
-                    tracks_data[track_ids[i]] = x[i], y[i]
+                    track_id = track_ids[i]
+                    if track_id in track_ids_requested:
+                        tracks_data[track_id] = x[i], y[i]
     return tracks_data
 
 
 def compose(f, g):
     return lambda x: f(g(x))
-
-
-def add_trailing_slash(path: str) -> str:
-    return os.path.join(path, '')

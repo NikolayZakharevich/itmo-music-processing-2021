@@ -8,7 +8,7 @@ from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix, accuracy_s
 from app.common.columns import Column
 
 
-def display_confusion_matrix(
+def show_confusion_matrix(
         y_true,
         y_pred,
         labels,
@@ -21,18 +21,21 @@ def display_confusion_matrix(
     title = title + '\naсcuracy: ' + str(accuracy_score(y_true, y_pred))
     fig, ax = plt.subplots(figsize=figsize)
     ax.set_title(title)
-    cm_display.plot(
-        ax=ax
-    )
+    cm_display.plot(ax=ax)
     plt.show()
 
 
 def show_emotions_frequencies(tracks: pd.DataFrame):
-    label_freq = tracks[Column.EMOTIONS.value].apply(
-        lambda s: str(s).split('|')
-    ).explode().value_counts().sort_values(ascending=False)
+    show_frequencies(
+        tracks[Column.EMOTIONS.value].apply(lambda s: str(s).split('|')).explode(),
+        'Частота эмоций'
+    )
 
-    title = f'Частота эмоций (сумма по всем — {sum(label_freq)})'
+
+def show_frequencies(items: pd.Series, title: str = 'Частота'):
+    label_freq = items.value_counts().sort_values(ascending=False)
+
+    title = f'{title} (сумма по всем — {sum(label_freq)})'
 
     style.use('fivethirtyeight')
     plt.figure(figsize=(12, 10))
@@ -46,11 +49,10 @@ def show_emotions_frequencies(tracks: pd.DataFrame):
 
 def show_history(history, title):
     best_top3_accuracy = max(history.history['val_top3-accuracy'])
-    title = f'{title}: model accuracy\nBest top3-accuracy: {best_top3_accuracy}'
 
-    style.use("bmh")
-    plt.title(title)
+    style.use('bmh')
 
+    plt.title(f'{title}: model accuracy\nBest top3-accuracy: {best_top3_accuracy}')
     plt.plot(history.history['accuracy'])
     plt.plot(history.history['val_accuracy'])
     plt.plot(history.history['top3-accuracy'])

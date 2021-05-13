@@ -1,14 +1,13 @@
-import os
-from typing import Dict, Union, List, Tuple
+import warnings
+from typing import List, Tuple
 
 import librosa as lbr
 import numpy as np
 import pandas as pd
-from pydub import AudioSegment
+from sklearn.preprocessing import MultiLabelBinarizer
 
 from app.common.columns import Column, EMOTIONS
-from pickle import dump, load
-from sklearn.preprocessing import MultiLabelBinarizer, OneHotEncoder
+from app.common.utils import split_equal_chunks
 
 WINDOW_SIZE = 2048
 WINDOW_STRIDE = WINDOW_SIZE // 2
@@ -20,6 +19,16 @@ MEL_KWARGS = {
 }
 
 SECOND_IN_MILLIES = 1000
+MINUTE_LENGTH = 1292
+
+
+def extract_audio_features_v1_chunks(filename) -> list[np.ndarray]:
+    print(f'Extracting audio features from file {filename}...')
+    with warnings.catch_warnings():
+        new_input, sample_rate = lbr.load(filename, mono=True)
+        features: np.ndarray = lbr.feature.melspectrogram(new_input, **MEL_KWARGS).T
+    features[features == 0] = 1e-6
+    return split_equal_chunks(np.log(features), MINUTE_LENGTH)
 
 
 def extract_audio_features_v1(filename, enforce_shape=None):
@@ -64,18 +73,6 @@ def prepare_data_v1(
     mlb.fit([])
     y = mlb.transform(tracks[label_column.value].apply(lambda s: str(s).split('|')).tolist())
     return X, y
-
-
-def dump_data(x: np.array, y: np.array, output_path: str):
-    data = {'x': x, 'y': y}
-    with open(output_path, 'wb') as f:
-        dump(data, f)
-    return data
-
-
-def load_data(data_path: str) -> Dict[str, np.array]:
-    with open(data_path, 'rb') as f:
-        return load(f)
 
 
 def prepare_data_emotions_v1(df: pd.DataFrame, enforce_shape=None) -> Tuple[np.ndarray, np.ndarray]:

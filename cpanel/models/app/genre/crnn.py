@@ -1,4 +1,4 @@
-from app.common.crnn import CRNNClassifier
+from app.classifiers.crnn import CrnnClassifier
 
 GENRES = [
     'blues',
@@ -14,5 +14,5 @@ GENRES = [
 ]
 
 
-class GenreClassifier(CRNNClassifier):
+class GenreClassifier(CrnnClassifier):
     label_names = GENRES

@@ -68,6 +68,24 @@ class Genre(Enum):
     OTHER = 'other'
 
 
+@unique
+class GenreNational(Enum):
+    AZERBAIJANI = 'azerbaijani'
+    AMERICAN = 'amerfolk'
+    ARGENTINIAN = 'argentinetango'
+    ARMENIAN = 'armenian'
+    AFRICAN = 'african'
+    BALKAN = 'balkan'
+    EASTERN = 'eastern'
+    GEORGIAN = 'georgian'
+    JEWISH = 'jewish'
+    EUROPEAN = 'eurofolk'
+    CAUCASIAN = 'caucasian'
+    CELTIC = 'celtic'
+    LATIN = 'latinfolk'
+    RUSSIAN = 'rusfolk'
+
+
 def map_genre_raw(genre_raw) -> Genre:
     mapping = {
         'allrock': Genre.ROCK,

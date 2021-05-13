@@ -4,7 +4,7 @@ import pandas as pd
 
 from app.columns import map_genre_raw, Column, Emotion, AssignmentColumn, Genre
 from app.utils import calc_track_hash
-from config import STATIC_STORAGE_URL
+from config import STORAGE_URL_STATIC
 
 
 def df_filter_has_genre(df: pd.DataFrame) -> pd.DataFrame:
@@ -28,7 +28,7 @@ def df_drop_narrow_genres(df: pd.DataFrame) -> pd.DataFrame:
                       'musical', 'funk', 'vocal', 'dnb', 'experimental', 'animated', 'reggae', 'industrial',
                       'relax']
     df = df[(~df.genre.isin(genres_to_drop)) & df.genre.notnull()]
-    df[Column.GENRE.value] = df.genre.apply(lambda g: map_genre_raw(g).value)
+    df[Column.GENRE.value] = df.nation.apply(lambda g: map_genre_raw(g).value)
     return df
 
 

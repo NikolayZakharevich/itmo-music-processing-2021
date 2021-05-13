@@ -10,5 +10,7 @@ if not BASE_PATH.endswith('/'):
 DATASET_DIR = BASE_PATH + 'data/'
 MODELS_DIR = BASE_PATH + 'models/'
 
+DIR_STORAGE_AUDIOS = '/var/www/cpanel/static/data/audios'
+
 IP = os.getenv('IP')
 PORT = os.getenv('PORT')

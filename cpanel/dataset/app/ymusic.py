@@ -1,15 +1,16 @@
 from pathlib import Path
-from typing import Any, Union
+from typing import Any, Optional
 
 import pandas as pd
 from yandex_music import Client
 
-from app.columns import Emotion, Column, Genre
+from app.columns import Emotion, Column, Genre, GenreNational
 from app.utils import ensure_dirs_exist
 from config import TOKEN_YANDEX_MUSIC, DIR_DATA_AUDIOS, DIR_DATA_LYRICS, DIR_DATA_COVERS, to_absolute_path
 
 PLAYLIST_NAME_PREFIX_EMOTION = 'emotion-'
 PLAYLIST_NAME_PREFIX_GENRE = 'genre-'
+PLAYLIST_NAME_PREFIX_NATIONAL = 'national-'
 
 
 class YMusic:
@@ -23,7 +24,7 @@ class YMusic:
             self,
             tracks: pd.DataFrame,
             emotion: Emotion,
-            limit: Union[int, None] = None,
+            limit: Optional[int] = None,
             skip_download=None
     ):
         playlist_name = PLAYLIST_NAME_PREFIX_EMOTION + emotion.value
@@ -38,7 +39,7 @@ class YMusic:
             self,
             tracks: pd.DataFrame,
             genre: Genre,
-            limit: Union[int, None] = None
+            limit: Optional[int] = None
     ):
         playlist_name = PLAYLIST_NAME_PREFIX_GENRE + genre.value
         return self.update_from_playlist(
@@ -48,13 +49,26 @@ class YMusic:
             skip_download=set()
         )
 
+    def update_from_national_playlists(
+            self,
+            tracks: pd.DataFrame,
+            nation: GenreNational,
+            skip_download: Optional[set[int]] = None
+    ):
+        playlist_name = PLAYLIST_NAME_PREFIX_NATIONAL + nation.value
+        return self.update_from_playlist(
+            playlist_name=playlist_name,
+            current_tracks=tracks,
+            skip_download=skip_download
+        )
+
     # @see https://music.yandex.ru/users/nikolay.zakharevich/playlists
     def update_from_playlist(
             self,
             playlist_name: str,
             current_tracks: pd.DataFrame,
-            limit: Union[int, None] = None,
-            skip_download: Union[None, set[int]] = None
+            limit: Optional[int] = None,
+            skip_download: Optional[set[int]] = None
     ):
         self._check_auth()
 
@@ -159,7 +173,7 @@ class YMusic:
             lyrics_path = None
             try:
                 supplement = track.get_supplement()
-                if supplement is None or supplement.lyrics is None or supplement.lyrics.full_lyrics is None:
+                if supplement is None or supplement.lyrics is None or not supplement.lyrics.full_lyrics:
                     print(f'Track #{num} ({track.title}) has no lyrics')
                 else:
                     if not (lyrics_dir / Path(lyrics_filename)).exists():
