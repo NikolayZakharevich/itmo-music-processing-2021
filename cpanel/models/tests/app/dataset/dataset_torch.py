@@ -1,7 +1,7 @@
 import unittest
 
 from app.common.columns import Emotion, EMOTIONS
-from dataset.dataset_torch import get_dataloaders_split
+from app.dataset.dataset_torch import get_dataloaders_split
 from tests.common import data_provider
 
 
