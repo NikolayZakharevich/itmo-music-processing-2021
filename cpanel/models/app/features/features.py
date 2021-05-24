@@ -4,11 +4,14 @@ from typing import List, Tuple
 import librosa as lbr
 import numpy as np
 import pandas as pd
+import torchaudio
 from sklearn.preprocessing import MultiLabelBinarizer
+from torchaudio.transforms import MelSpectrogram
 
 from app.common.columns import Column, EMOTIONS
 from app.common.utils import split_equal_chunks
 
+SAMPLE_RATE = 22050
 WINDOW_SIZE = 2048
 WINDOW_STRIDE = WINDOW_SIZE // 2
 N_MELS = 128
@@ -25,10 +28,24 @@ MINUTE_LENGTH = 1292
 def extract_audio_features_v1_chunks(filename) -> list[np.ndarray]:
     print(f'Extracting audio features from file {filename}...')
     with warnings.catch_warnings():
-        new_input, sample_rate = lbr.load(filename, mono=True)
+        new_input, _ = lbr.load(filename, SAMPLE_RATE)
         features: np.ndarray = lbr.feature.melspectrogram(new_input, **MEL_KWARGS).T
     features[features == 0] = 1e-6
     return split_equal_chunks(np.log(features), MINUTE_LENGTH)
+
+
+def extract_audio_features_v2_chunks(filename):
+    import torch
+    effects = [['remix', '2'], ['rate', str(SAMPLE_RATE)]]
+    waveform, _ = torchaudio.sox_effects.apply_effects_file(filename, effects)
+    ms = MelSpectrogram(
+        sample_rate=SAMPLE_RATE,
+        n_fft=WINDOW_SIZE,
+        hop_length=WINDOW_STRIDE,
+        n_mels=N_MELS
+    )(waveform)[0]
+    ms[ms == 0] = 1e6
+    return torch.tensor(split_equal_chunks(torch.log(ms).tolist(), MINUTE_LENGTH)),
 
 
 def extract_audio_features_v1(filename, enforce_shape=None):
