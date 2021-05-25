@@ -1,3 +1,4 @@
+import random
 from collections import Counter
 from enum import Enum, unique
 from os import PathLike
@@ -37,6 +38,41 @@ class Emotion(Enum):
 
 
 EMOTIONS = [e.value for e in Emotion]
+
+FONTS = ['StalinistOne', 'Homenaje', 'JejuHallasan', 'DenkOne', 'Amiko',
+         'StintUltraCondensed', 'B612Mono', 'BalooChettan', 'HFFPureVain', 'HeadlandOne',
+         'AlfaSlabOne', 'Kadwa', 'FreckleFace', 'Balthazar', 'Bangers', 'BlackOpsOne',
+         'Junge', 'Knewave', 'SpectralSC']
+
+
+def get_emoji(emotion: str) -> str:
+    emoji = {
+        Emotion.COMFORTABLE.value: '😊',
+        Emotion.HAPPY.value: '😁',
+        Emotion.INSPIRATIONAL.value: '🤩',
+        Emotion.JOY.value: '😂',
+        Emotion.LONELY.value: '😟',
+        Emotion.FUNNY.value: '😆',
+        Emotion.NOSTALGIC.value: '🙄',
+        Emotion.PASSIONATE.value: '😍',
+        Emotion.QUIET.value: '🤐',
+        Emotion.RELAXED.value: '😌',
+        Emotion.ROMANTIC.value: '😘',
+        Emotion.SADNESS.value: '🙁',
+        Emotion.SOULFUL.value: '🙃',
+        Emotion.SWEET.value: '🤗',
+        Emotion.SERIOUS.value: '🤨',
+        Emotion.ANGER.value: '😡',
+        Emotion.WARY.value: '😑',
+        Emotion.SURPRISE.value: '😲',
+        Emotion.FEAR.value: '😱'
+    }
+    return emoji.get(emotion, '')
+
+
+def get_fonts(emotion: str):
+    # TODO: разметить
+    return random.choices(FONTS, k=5)
 
 
 class EmotionClassifier(nn.Module):

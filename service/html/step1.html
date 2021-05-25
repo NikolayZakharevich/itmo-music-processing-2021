@@ -13,26 +13,6 @@
 
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js'></script>
     <script src='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
-    <style type="text/css">
-    </style>
-    <style>
-        .masonry {
-            column-count: 3;
-            column-gap: 1em;
-            margin-top: 50px;
-
-        }
-
-        .masonry-item {
-            display: inline-block;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.18);
-            border-radius: .5rem;
-            padding: 1.5rem;
-            margin: .5rem auto;
-            width: 100%;
-        }
-    </style>
 </head>
 <body>
 <section>
@@ -54,9 +34,9 @@
         <div class="Center" style="padding-top: 150px; justify-content: flex-start;">
 
             <h1 class="Title">Music Keywords Suggestion</h1>
-            <p class="SubTitle">Get design ideas based on the song<br><br></p>
+            <p class="SubTitle">Get design ideas based on the song</p>
 
-            <form method='POST' enctype='multipart/form-data' action="/demo/music-keywords">
+            <form method='POST' enctype='multipart/form-data' action="/demo/music-keywords?step=1">
                 <div class="form-group">
                     <div style="clear: both; margin: 20px 0 50px 0;">
                         <label for="audio">Upload the song</label>
@@ -69,11 +49,6 @@
                        value='Submit'/>
             </form>
         </div>
-        <table>
-            % for emotion in emotions:
-                ${emotion}
-            % endfor
-        </table>
     </article>
 </section>
 </body>

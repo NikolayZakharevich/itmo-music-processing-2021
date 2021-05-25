@@ -13,14 +13,27 @@
 
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js'></script>
     <script src='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+    <script>
+        function forwardHash(action) {
+            debugger;
+            const urlParams = new URLSearchParams(location.href);
+            const hash = urlParams.get('hash')
+            return action + '&hash=' + hash
+        }
+    </script>
     <style type="text/css">
+       % for font in fonts:
+            @font-face {
+                font-family: "${font}";
+                src: url("/content/fonts/${font}.ttf") format("truetype");
+            }
+       % endfor
     </style>
     <style>
         .masonry {
             column-count: 3;
             column-gap: 1em;
             margin-top: 50px;
-
         }
 
         .masonry-item {
@@ -33,6 +46,13 @@
             width: 100%;
         }
     </style>
+    <script>
+        function forwardHash(action) {
+            const urlParams = new URLSearchParams(location.href);
+            const hash = urlParams.get('hash')
+            return action + '&hash=' + hash
+        }
+    </script>
 </head>
 <body>
 <section>
@@ -56,53 +76,31 @@
             <h1 class="Title">Music Keywords Suggestion</h1>
             <p class="SubTitle">Get design ideas based on the song<br><br></p>
 
-            <form method='POST' enctype='multipart/form-data' action="/demo/music-keywords">
+            <form method='POST' enctype='multipart/form-data' action="/demo/music-keywords?step=4"
+                  onsubmit="this.action = forwardHash(this.action); this.submit(); return false;">
                 <div class="form-group">
-                    <div style="clear: both; margin: 20px 0 50px 0;">
-                        <label for="audio">Upload the song</label>
-                        <input type="file" id="audio" name="audio"
-                               accept="audio/*" class="Input__Input" required>
+
+                    <h4>Choose the font which fits best</h4><br>
+                    <div class="masonry col-12">
+                        % for font in fonts:
+                            <div class="masonry-item">
+                                <div name="font_name" class="ImageUploader__Input-Label-Message"
+                                     style="margin-bottom: 1rem;">
+                                    ${font}
+                                </div>
+                                <p name="font_text" style="font-family: ${font}; font-size: 1.5rem;">Test</p>
+                            </div>
+                            <input checked type="radio" name="font" value="${font}" class="Input__Input">
+                        % endfor
                     </div>
+
+                    <input type='submit'
+                           class="Footer__NextButton Footer__NextButton--visible Footer__NextButton--active"
+                           value='Submit'/>
                 </div>
-                <input type='submit'
-                       class="Footer__NextButton Footer__NextButton--visible Footer__NextButton--active"
-                       value='Submit'/>
             </form>
 
-            <div class="form-group">
-                    <label for="emotionSelect" style="padding-right: 2.4rem;"><h4>Did we catch the song mood?</h4>
-                    </label>
-                    <select id="emotionSelect" name="emotion" class="Textarea__Textarea SelectAlt__Select">
-                        <option value="0">Select another mood 👇</option>
-                        <option value="comfortable">😊 comfortable</option>
-                        <option value="happy">😁 happy</option>
-                        <option value="inspirational">🤩 inspirational</option>
-                        <option value="joy">😂 joy</option>
-                        <option value="lonely">😟 lonely</option>
-                        <option value="funny">😆 funny</option>
-                        <option value="nostalgic">🙄 nostalgic</option>
-                        <option value="passionate">😍 passionate</option>
-                        <option value="quiet">🤐 quiet</option>
-                        <option value="relaxed">😌 relaxed</option>
-                        <option value="romantic">😘 romantic</option>
-                        <option value="sadness">🙁 sadness</option>
-                        <option value="soulful">🙃 soulful</option>
-                        <option value="sweet">🤗 sweet</option>
-                        <option value="serious">🤨 serious</option>
-                        <option value="anger">😡 anger</option>
-                        <option value="wary">😑 wary</option>
-                        <option value="surprise">😲 surprise</option>
-                        <option value="fear">😱 fear</option>
-                    </select>
-                </div>
-
-
         </div>
-        <table>
-            % for emotion in emotions:
-                ${emotion}
-            % endfor
-        </table>
     </article>
 </section>
 </body>

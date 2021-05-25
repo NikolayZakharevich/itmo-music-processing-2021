@@ -29,7 +29,7 @@ class KeywordsSuggester(nn.Module):
             hidden_dim: int,
             output_dim: int,
             batch_size: int = 9,
-            n_layers: int = 2
+            n_layers: int = 3
     ):
         """
         :param input_dim: The number of expected features in the input `x`

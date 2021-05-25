@@ -6,7 +6,8 @@ EXPOSE 8080
 RUN apt-get update \
 && apt-get upgrade -y \
 && apt-get install -y \
-&& apt-get -y install apt-utils gcc libpq-dev libsndfile-dev
+&& apt-get -y install apt-utils gcc libpq-dev libsndfile-dev \
+&& apt-get -y install ffmpeg
 
 COPY ./requirements.txt /inference-api/requirements.txt
 RUN pip install -r /inference-api/requirements.txt
@@ -20,6 +21,7 @@ RUN apt-get -y install cron
 CMD cron
 
 COPY app/* /inference-api/app/
+COPY html/* /inference-api/html/
 COPY models/* /inference-api/models/
 COPY server.py /inference-api/server.py
 COPY ./config.yml /inference-api/config.yml
