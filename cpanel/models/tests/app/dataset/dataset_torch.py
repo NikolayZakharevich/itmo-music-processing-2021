@@ -1,7 +1,7 @@
 import unittest
 
 from app.common.columns import Emotion, EMOTIONS
-from app.dataset.dataset_torch import get_dataloaders_split
+from app.dataset.dataset_torch import multiclass_get_dataloaders_split
 from tests.common import data_provider
 
 
@@ -22,7 +22,7 @@ class TestDataset(unittest.TestCase):
 
     @data_provider(dataset_track_ids)
     def test_get_dataset(self, track_ids: list[int], labels: dict[int, str]):
-        d1, d2 = get_dataloaders_split(
+        d1, d2 = multiclass_get_dataloaders_split(
             track_ids=track_ids,
             labels=labels,
             label_names=EMOTIONS

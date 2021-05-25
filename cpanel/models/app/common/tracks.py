@@ -8,7 +8,7 @@ def get_audio_url(track_id: int) -> str:
 
 
 def get_audio_path_default(track_id: int) -> str:
-    return DIR_AUDIOS + f'{track_id}.mp3'
+    return f'data/audios/{track_id}.mp3'
 
 
 def audio_file_exists(track_id: int) -> bool:

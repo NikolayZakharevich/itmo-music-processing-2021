@@ -3,6 +3,7 @@ from typing import Type, Optional
 
 import numpy as np
 import pandas as pd
+import torch
 from sklearn.preprocessing import MultiLabelBinarizer
 
 from app.classifiers.abstract import AbstractClassifier
@@ -11,8 +12,11 @@ from app.dataset.dumps import get_tracks_features_v1, get_single_track_features_
 from app.common.utils import cover_accuracy
 from app.common.view import show_confusion_matrix
 from app.dataset.dataset_tf import TracksGenerator
-from app.emotion.classifiers import EmotionClassifierTransformer, EmotionClassifierCrnn
+from app.emotion.classifiers import EmotionClassifierTransformer, EmotionClassifierCrnn, EmotionClassifierLstm
+from classifiers.classifiers_torch import LstmClassifier, multiclass_train_lstm
 from config import DIR_MODELS, FILE_TRACKS
+from dataset.dataset_torch import multiclass_get_dataloaders_split
+from features.features import N_MELS
 
 MODEL_PATH_CRNN_V1 = DIR_MODELS + 'emotions_crnn_v1.h5'
 MODEL_PATH_CRNN_V2 = DIR_MODELS + 'emotions_crnn_v2.h5'
@@ -56,7 +60,41 @@ def emotions_train_crnn_tf():
 
 
 def emotions_train_lstm_tf():
-    emotions_train_tf(EmotionClassifierCrnn, MODEL_PATH_LSTM_V1)
+    emotions_train_tf(EmotionClassifierLstm, MODEL_PATH_LSTM_V1)
+
+
+def emotions_train_lstm_torch():
+    track_ids, labels = get_track_ids_and_labels()
+
+    batch_size = 9
+    dataloader_train, dataloader_val = multiclass_get_dataloaders_split(
+        track_ids=track_ids,
+        labels=labels,
+        label_names=EMOTIONS,
+        batch_size=9,
+        test_split_size=0.1,
+        test_split_seed=2021
+    )
+
+    input_dim = N_MELS
+    hidden_dim = 32
+    n_classes = len(EMOTIONS)
+    n_layers = 2
+    model = LstmClassifier(
+        input_dim=input_dim,
+        hidden_dim=hidden_dim,
+        batch_size=batch_size,
+        output_dim=n_classes,
+        n_layers=n_layers
+    )
+    model.load_state_dict(torch.load('models/emotions-lstm_v2_top3-accuracy=0.4462.pt'))
+
+    multiclass_train_lstm(
+        model=model,
+        dataloader_train=dataloader_train,
+        dataloader_val=dataloader_val,
+        filename_prefix='emotions-lstm'
+    )
 
 
 def emotions_train_tf(classifier: Type[AbstractClassifier], model_path: str, epochs: Optional[int] = None):
