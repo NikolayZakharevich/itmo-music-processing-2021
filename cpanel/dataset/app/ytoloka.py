@@ -27,7 +27,7 @@ from config import TOKEN_YANDEX_TOLOKA, YANDEX_TOLOKA_PROJECT_ID, YANDEX_TOLOKA_
 REWARD_PER_ASSIGNMENT = 0.01
 TASKS_PER_TASK_SUITE = 20
 TRAINING_PASSING_SKILL_VALUE = 90
-OVERLAP = 3
+OVERLAP = 5
 
 
 # Conventions:
@@ -268,7 +268,7 @@ class YToloka:
                         ]
                     ),
                     QualityControl.QualityControlConfig(
-                        collector_config=MajorityVote(answer_threshold=2, history_size=10),
+                        collector_config=MajorityVote(answer_threshold=3, history_size=10),
                         rules=[
                             QualityControl.QualityControlConfig.RuleConfig(
                                 action=RestrictionV2(
@@ -295,25 +295,3 @@ class YToloka:
 
     def _get_pool_id(self, emotion: Emotion) -> str:
         return self.get_or_create_pool(emotion).id
-
-
-if __name__ == '__main__':
-    data1 = [
-        {'x': 1, 'y': 2, 'z': 1},
-        {'x': 2, 'y': 4, 'z': 5},
-        {'x': 3, 'y': 1, 'z': 4},
-        {'x': 4, 'y': 3, 'z': 3},
-    ]
-    data2 = [
-        {'a': 1, 'b': 2, 'c': 1},
-        {'a': 4, 'b': 2, 'c': 1},
-    ]
-
-    df1 = pd.DataFrame(data1)
-    df2 = pd.DataFrame(data2)
-
-    df3 = df1[df1.x.isin(df2.a)]
-    df4 = df1[~df1.x.isin(df2.a)]
-
-    print(df3)
-    print(df4)
