@@ -83,7 +83,7 @@ class YToloka:
 
         return self.client.create_task_suites(task_suites=task_suites)
 
-    def stop_task_suites(self, emotion: Emotion):
+    def stop_pool(self, emotion: Emotion):
         pool_id = self._get_pool_id(emotion)
 
         task_suites = self.client.get_task_suites(pool_id=pool_id)
