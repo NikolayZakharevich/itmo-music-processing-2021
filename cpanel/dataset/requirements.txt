@@ -9,3 +9,4 @@ lxml~=4.6.3
 python-dateutil~=2.8.1
 seaborn~=0.9.0
 google_trans_new~=1.1.9
+lyrics_extractor~=3.0.1
