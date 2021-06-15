@@ -39,6 +39,7 @@ class AppServerController(object):
             hash: Optional[str] = None,
             emotion: Optional[str] = None,
             emotion_custom: Optional[str] = None,
+            text_test: Optional[str] = None,
             font: Optional[str] = None
     ):
         """
@@ -61,7 +62,7 @@ class AppServerController(object):
         elif step == 3:
             if emotion is None:
                 emotion = emotion_custom
-            return self.step3_page(emotion)
+            return self.step3_page(emotion, text_test)
         elif step == 4:
             return self.step4_page(font, hash)
         else:
@@ -107,16 +108,15 @@ class AppServerController(object):
         emotions = predict_topk_emotions(features, k=3)
         return self.render_step2_page(emotions)
 
-    def step3_page(self, emotion: str) -> str:
+    def step3_page(self, emotion: str, text_test: str) -> str:
         """
         Step 3.
         - After emotion selecting
         :param emotion: emotion selected by user
-        :param hash:    part of file name with cached song features
         :return:
         """
         fonts = get_fonts(emotion)
-        return self.render_step3_page(fonts)
+        return self.render_step3_page(fonts, text_test)
 
     def step4_page(self, font: str, hash: str) -> str:
         """
@@ -160,12 +160,13 @@ class AppServerController(object):
         return AppServerController.render_page(PAGE_STEP_2, **page_params)
 
     @staticmethod
-    def render_step3_page(fonts: List[str]):
-        return AppServerController.render_page(PAGE_STEP_3, **{'fonts': fonts})
+    def render_step3_page(fonts: List[str], text_test: str):
+        return AppServerController.render_page(PAGE_STEP_3, **{'fonts': fonts, 'text_test': text_test})
 
     @staticmethod
     def render_step4_page(keywords: List[str], font: str):
-        return AppServerController.render_page(PAGE_STEP_4, **{'font': font, 'keywords': keywords})
+        return AppServerController.render_page(PAGE_STEP_4, **{'font': font, 'keywords': keywords,
+                                                               'keywords_str': ', '.join(keywords)})
 
     @staticmethod
     def render_page(page: str, **kwargs):

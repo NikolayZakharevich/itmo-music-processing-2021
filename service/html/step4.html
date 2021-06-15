@@ -24,12 +24,12 @@
     <style type="text/css">
         @font-face {
             font-family: "${font}";
-            src: url("/content/fonts/${font}.ttf") format("truetype");
+            src: url("https://tools.deflamel.com/content/fonts/${font}.ttf") format("truetype");
         }
     </style>
     <style>
         .masonry {
-            column-count: 3;
+            column-count: 1;
             column-gap: 1em;
             margin-top: 50px;
         }
@@ -42,6 +42,7 @@
             padding: 1.5rem;
             margin: .5rem auto;
             width: 100%;
+            text-align: center;
         }
     </style>
     <script>
@@ -86,12 +87,12 @@
                        class="Footer__NextButton Footer__NextButton--visible Footer__NextButton--active"
                        value='Submit'/>
             </form>
+
             <div class="masonry col-12">
-                % for keyword in keywords:
+                <h4 class="Title">Your song's keywords:</h4>
                 <div class="masonry-item">
-                    <p name="font_text" style="font-family: ${font}; font-size: 1.5rem;">${keyword}</p>
+                    <p style="font-family: ${font}; font-size: 1.5rem;">${keywords_str}</p>
                 </div>
-                % endfor
             </div>
         </div>
     </article>

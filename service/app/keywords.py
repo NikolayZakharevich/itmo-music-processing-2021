@@ -7,15 +7,11 @@ import torch
 from torch import nn
 
 from app.features import N_MELS
+from app.resources import load_keywords
 
 MODEL_PATH = 'models/keywords.pt'
 
-keywords = [
-    'love', 'heart', 'way', 'time', 'eyes', 'life', 'night', 'baby', 'everything', 'mind', 'world', 'nothing',
-    'something', 'day', 'things', 'soul', 'sun', 'one', 'home', 'pain', 'hands', 'dreams', 'end', 'god', 'dream',
-    'place', 'head', 'words', 'yeah', 'someone', 'sky', 'cause', 'girl', 'moment', 'hand', 'truth', 'man', 'fire',
-    'face', 'light', 'tears', 'ooh', 'name', 'song', 'somebody', 'side', 'morning', 'smile', 'nobody', 'tonight'
-]
+KEYWORDS = load_keywords()
 
 
 class KeywordsSuggester(nn.Module):
@@ -61,7 +57,7 @@ def load_model(model_path: Union[str, bytes, PathLike]) -> nn.Module:
     """
     input_dim = N_MELS
     hidden_dim = 32
-    n_classes = len(keywords)
+    n_classes = len(KEYWORDS)
 
     model = KeywordsSuggester(
         input_dim=input_dim,
@@ -78,4 +74,4 @@ def predict_keywords(features: np.ndarray, k=10) -> List[str]:
     output = model(torch.tensor(features))
     indices = torch.flatten(torch.topk(output, k, dim=1)[1])
     indices = list(map(lambda x: x[0], Counter(indices).most_common(k)))
-    return [keywords[i] for i in indices]
+    return [KEYWORDS[i] for i in indices]

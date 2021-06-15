@@ -11,6 +11,10 @@ from torch import nn
 
 from app.features import N_MELS
 
+import json
+
+from app.resources import load_emotion_fonts
+
 MODEL_PATH = 'models/emotions.pt'
 
 
@@ -38,11 +42,7 @@ class Emotion(Enum):
 
 
 EMOTIONS = [e.value for e in Emotion]
-
-FONTS = ['StalinistOne', 'Homenaje', 'JejuHallasan', 'DenkOne', 'Amiko',
-         'StintUltraCondensed', 'B612Mono', 'BalooChettan', 'HFFPureVain', 'HeadlandOne',
-         'AlfaSlabOne', 'Kadwa', 'FreckleFace', 'Balthazar', 'Bangers', 'BlackOpsOne',
-         'Junge', 'Knewave', 'SpectralSC']
+EMOTION_FONTS = load_emotion_fonts()
 
 
 def get_emoji(emotion: str) -> str:
@@ -70,9 +70,8 @@ def get_emoji(emotion: str) -> str:
     return emoji.get(emotion, '')
 
 
-def get_fonts(emotion: str):
-    # TODO: разметить
-    return random.choices(FONTS, k=5)
+def get_fonts(emotion: str) -> list[str]:
+    return random.choices(EMOTION_FONTS[emotion], k=5) if emotion in EMOTION_FONTS else []
 
 
 class EmotionClassifier(nn.Module):

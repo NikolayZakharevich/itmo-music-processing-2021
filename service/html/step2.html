@@ -98,6 +98,7 @@
                 </label>
                 <br>
 
+                <label for="emotionSelect"></label>
                 <select required id="emotionSelect" name="emotion_custom" class="Select__Select emotion-select"
                         onchange="onSelectEmotionCustom()">
                     <option value="0">Select another mood 👇</option>
@@ -121,6 +122,12 @@
                     <option value="surprise">😲 surprise</option>
                     <option value="fear">😱 fear</option>
                 </select>
+
+                <div style="margin-bottom: 30px;">
+                    <label for="testInput"></label>
+                    <textarea class="form-control" id="testInput" name="text_test" rows="3"
+                              placeholder="Type something..." required=""></textarea>
+                </div>
 
                 <input type='submit'
                        id="submit"
