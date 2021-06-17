@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8"/>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
+
+    <title>Deflamel &#8211; Design Wizard</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <link rel='stylesheet' id='vapp-responsive-css' href='https://app.deflamel.com/assets/styles/all.css'
+          type='text/css' media='all'/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous"/>
+
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js'></script>
+    <script src='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+    <style>
+        .MainSmileContainer {
+            font-size: 3.0rem;
+            display: -webkit-flex;
+            display: flex;
+            width: 80%;
+            -webkit-justify-content: center;
+            justify-content: center
+        }
+
+        .MainSmileAndNameContainer {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-direction: column;
+            flex-direction: column;
+            width: 20%;
+            height: 40%;
+            margin: 10px 20px;
+            -webkit-justify-content: space-around;
+            justify-content: space-around;
+            -webkit-align-items: center;
+            align-items: center
+        }
+
+        .MainSmileAndNameContainer:hover {
+            cursor: pointer;
+            background: #c5d2f6;
+            border-radius: 5%
+        }
+
+        .MainSmileName {
+            text-align: center;
+            color: #818992;
+            font-size: 1.2rem;
+            padding-top: 1.2rem
+        }
+    </style>
+</head>
+<body>
+<section>
+    <article class="SignUp">
+        <header class="Header">
+            <div class="Header__BackButton">
+                <a href="https://deflamel.com/index.php/design-features/" class="Header__BackButton-Arrow"></a>
+            </div>
+            <a class="Header__Logo" href="//deflamel.com/" target="_self"></a>
+            <a href="https://deflamel.com/index.php/design-features/">
+                <div class="Header__Menu">
+                    <span class="Header__Menu-Item"></span>
+                    <span class="Header__Menu-Item"></span>
+                    <span class="Header__Menu-Item"></span>
+                </div>
+            </a>
+        </header>
+
+        <div class="Center" style="padding-top: 150px; justify-content: flex-start;">
+
+            <h1 class="Title">Music Emotion Suggestion</h1>
+            <p class="SubTitle">Get design ideas based on the song</p>
+
+            <#if emoji_1?? && emoji_2?? && emoji_3??>
+            <h2>Did we catch the song mood?</h2><br>
+            <div class="MainSmileContainer">
+                <div class="MainSmileAndNameContainer">
+                    ${emoji_1}
+                    <div class="MainSmileName">${emotion_1}</div>
+                </div>
+                <div class="MainSmileAndNameContainer">
+                    ${emoji_2}
+                    <div class="MainSmileName">${emotion_2}</div>
+                </div>
+                <div class="MainSmileAndNameContainer">
+                    ${emoji_3}
+                    <div class="MainSmileName">${emotion_3}</div>
+                </div>
+            </div>
+            <#else></#if>
+
+            <form method='POST' enctype='multipart/form-data' action="/demo/${method_name}?step=1">
+                <div class="form-group">
+                    <div style="clear: both; margin: 20px 0 50px 0;">
+                        <label for="audio">Upload the song</label>
+                        <input type="file" id="audio" name="audio"
+                               accept="audio/*" class="Input__Input" required>
+                    </div>
+                </div>
+                <input type='submit'
+                       class="Footer__NextButton Footer__NextButton--visible Footer__NextButton--active"
+                       value='Submit'/>
+            </form>
+
+        </div>
+    </article>
+</section>
+</body>
+</html>
