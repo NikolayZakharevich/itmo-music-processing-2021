@@ -1,0 +1,12 @@
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+TOKEN_YANDEX_TOLOKA = os.getenv('TOKEN_YANDEX_TOLOKA')
+
+YANDEX_TOLOKA_PROJECT_ID = os.getenv('YANDEX_TOLOKA_PROJECT_ID')
+YANDEX_TOLOKA_TRAINING_POOL_ID = os.getenv('YANDEX_TOLOKA_TRAINING_POOL_ID')
+
+STORAGE_URL_STATIC = os.getenv('STORAGE_URL_STATIC')
+STORAGE_URL_API = os.getenv('STORAGE_URL_API')
