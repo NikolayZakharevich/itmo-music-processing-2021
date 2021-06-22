@@ -100,5 +100,5 @@ def get_results_all():
 if __name__ == '__main__':
     # my_vs_original()
     # my_vs_album_cover_generation()
-    # run_all()
+    run_all()
     get_results_all()
